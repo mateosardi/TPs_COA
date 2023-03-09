@@ -1,0 +1,68 @@
+% Usar el modelo lineal en el punto de operación {Q,H} de la Planta Hidráulica
+% donde: u(t) es el caudal de líquido que entra al tanque 1. Además se considera que
+% A1 = A2 = 1; R1 = R2 = 1/3 y el sistema de medidas es el MKS.
+% El objetivo de control es que la altura h2 siga una referencia constante determinada,
+% manipulando el caudal u.
+% Para ello, se pide diseñar un controlador que acelere la dinámica y estabilice al sistema,
+% mediante:
+% 1. PID en la representación entrada-salida.
+close all; clear all; clc;
+
+% Definicion de constantes
+A1=1; A2=1; R1=1/3; R2=1/3;
+H1 = 3; H2 = 3;
+tF = 10; % tiempo final
+Ts = 0.1; % tiempo de cada paso
+color_ = 'r';
+altura(1) = 0;
+
+% Definicion de variables
+X = [0 0]; % h1 y h2 tienen alturas iniciales en 3 m 
+u(1) = 0;
+
+% Definicion de matrices
+MatA = [-1/(A1*R1) 1/(A1*R1);1/(A2*R1) (1/(A2*R2)-1/(A2*R1))];
+MatB = [1/A1; 0];
+MatC = [0; 1];
+
+% Constantes del PID
+Kp=2; Ki=3; Kd=0;
+
+Ac=((2*Kp*Ts)+(Ki*(Ts^2))+(2*Kd))/(2*Ts);
+Bc=(-2*Kp*Ts+Ki*(Ts^2)-4*Kd)/(2*Ts);
+Cc=Kd/Ts;
+e=zeros(tF/Ts,1);
+
+% Euler
+i=0; k=0;
+for t=0:Ts:tF
+i=i+1; k=i+2;
+
+e(k)=H2-X(2); %ERROR
+u(i+1)=u(i)+Ac*e(k)+Bc*e(k-1)+Cc*e(k-2); %PID
+
+accion = u(i)
+h1 = X(1);
+h2 = X(2);
+h1p = 1/(A1*R1) * (h2-h1) + accion/A1;
+h2p = -1/(A2*R2) * (h2-h1) - h2/(A2*R2); 
+
+h2 = h2 + Ts*h2p;
+h1 = h1 + Ts*h1p;
+
+altura(i) = h2;
+
+X = [h1 h2];
+end
+u(i+2)=u(i);
+altura(i+1) = h2;
+altura(i+2) = h2;
+% Graficos
+t=0:Ts:tF+2*Ts;
+subplot(3,1,1);hold on;
+plot(t,e,color_);title('Error');
+subplot(3,1,2);hold on;
+plot(t,u,color_);title('Accion de control');
+subplot(3,1,3);hold on;
+plot(t,altura,color_);title('Altura');
+xlabel('Tiempo [Seg.]');
