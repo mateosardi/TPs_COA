@@ -1,0 +1,79 @@
+% Usar el modelo lineal en el punto de operación {Q,H} de la Planta Hidráulica
+% donde: u(t) es el caudal de líquido que entra al tanque 1. Además se considera que
+% A1 = A2 = 1; R1 = R2 = 1/3 y el sistema de medidas es el MKS.
+% El objetivo de control es que la altura h2 siga una referencia constante determinada,
+% manipulando el caudal u.
+% Para ello, se pide diseñar un controlador que acelere la dinámica y estabilice al sistema,
+% mediante:
+% 2. Asignación de polos en la representación en variables de estado, con el sistema lineal. 
+close all; clear all; clc;
+
+% Definicion de constantes
+A1=1; A2=1; R1=1/3; R2=1/3;
+H1 = 3; H2 = 3;
+tF = 10; % tiempo final
+Ts = 0.1; % tiempo de cada paso
+t=0:Ts:tF;
+ref = 0*t + H2; %Referencia
+color_ = 'r';
+altura(1) = 0;
+
+%Inicializacion de variables
+X = [0 0]; % h1 y h2 tienen alturas iniciales en 3 m 
+u(1) = 0;
+
+% Definicion de matrices
+MatA = [-1/(A1*R1) 1/(A1*R1);1/(A2*R1) (1/(A2*R2)-1/(A2*R1))];
+MatB = [1/A1; 0];
+MatC = [0 1];
+MatD = 0;
+
+% Controlabilidad
+Co = ctrb(MatA, MatB);
+rank(Co) % = 2 por ende es controlable
+
+% Polos del sistema
+p1 = -1+2i;
+p2 = -1-2i;
+p = [p1 p2];
+
+% Obtencion de K 
+K = place(MatA, MatB, p);
+
+% Ganancia de referencia
+G=-inv(MatC*inv(MatA-MatB*K)*MatB);
+
+% Euler
+i=1;
+for t=0:Ts:tF
+   
+u(i+1)=-K*X'+ref(i)*G;
+
+accion = u(i);
+h1 = X(1);
+h2 = X(2);
+h1p = 1/(A1*R1) * (h2-h1) + accion/A1;
+h2p = -1/(A2*R2) * (h2-h1) - h2/(A2*R2); 
+
+h2 = h2 + Ts*h2p;
+h1 = h1 + Ts*h1p;
+
+altura(i) = h2;
+
+X = [h1 h2]; 
+i=i+1;
+end
+% Ajuste de tamaño de vectores
+u(i+1)=u(i);
+altura(i) = h2;
+altura(i+1) = h2;
+
+% Graficos
+t=0:Ts:tF+2*Ts;
+% subplot(3,1,1);hold on;
+% plot(t,e,color_);title('Error');
+subplot(2,1,1);hold on;
+plot(t,u,color_);title('Accion de control');
+subplot(2,1,2);hold on;
+plot(t,altura,color_);title('Altura');
+xlabel('Tiempo [Seg.]');
