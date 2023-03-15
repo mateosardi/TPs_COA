@@ -23,7 +23,7 @@ X = [0 0]; % h1, h2
 u(1) = 0;
 
 % Definicion de matrices
-MatA = [-1/(A1*R1) 1/(A1*R1);1/(A2*R1) (1/(A2*R2)-1/(A2*R1))];
+MatA = [-1/(A1*R1) 1/(A1*R1);1/(A2*R1) (-1/(A2*R2)-1/(A2*R1))];
 MatB = [1/A1; 0];
 MatC = [0 1];
 MatD = 0;
