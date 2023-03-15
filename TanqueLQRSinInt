@@ -63,10 +63,12 @@ altura(i+1) = h2;
 
 % Graficos
 t=0:Ts:tF+2*Ts;
+ref = 0*t + H2;
 % subplot(3,1,1);hold on;
 % plot(t,e,color_);title('Error');
 subplot(2,1,1);hold on;
 plot(t,u,color_);title('Accion de control');
 subplot(2,1,2);hold on;
 plot(t,altura,color_);title('Altura');
+plot(t,ref,'b--');
 xlabel('Tiempo [Seg.]');
