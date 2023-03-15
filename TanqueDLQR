@@ -1,0 +1,70 @@
+% Usar el modelo lineal en el punto de operación {Q,H} de la Planta Hidráulica
+% donde: u(t) es el caudal de líquido que entra al tanque 1. Además se considera que
+% A1 = A2 = 1; R1 = R2 = 1/3 y el sistema de medidas es el MKS.
+% El objetivo de control es que la altura h2 siga una referencia constante determinada,
+% manipulando el caudal u.
+% Para ello, se pide diseñar un controlador que acelere la dinámica y estabilice al sistema,
+% mediante:
+% 4. DLQR con tiempo de evolución fija, es decir, un controlador variante en el tiempo.
+close all; clear all; clc;
+
+% Definicion de constantes
+A1=1; A2=1; R1=1/3; R2=1/3;
+Ts = 0.1; % tiempo de cada paso
+t=0;
+color_ = 'r';
+
+%Inicializacion de variables
+x = [0; 10]; % h1, h2
+h2(1)=x(2);
+u(1) = 0;
+
+% Definicion de matrices
+MatA = [-1/(A1*R1) 1/(A1*R1);1/(A2*R1) (-1/(A2*R2)-1/(A2*R1))];
+MatB = [1/A1; 0];
+MatC = [0 1];
+MatD = 0;
+
+% Discretización
+sys_c=ss(MatA,MatB,MatC,MatD);
+sys_d=c2d(sys_c,Ts,'zoh'); % retentor de orden cero
+
+MatA=sys_d.a;
+MatB=sys_d.b;
+
+% DLQR
+kmax=50; % Etapas de evolución
+Q = diag([.01 10]); R=10;
+S = diag([1 1]);
+P=S; %condición inicial de P
+
+% Ganancia de realimentación
+for hi=kmax-1:-1:1
+ P= Q + MatA'*P*inv(eye(2)+MatB*inv(R)*MatB'*P)*MatA; % Riccati
+ K(hi,:)=inv(R)*MatB'*inv(MatA')*(P-Q);
+end
+Jmin=x'*P*x;J=0;
+
+for ki=1:kmax-1
+ t=[t ki];
+ u(ki)=-K(ki,:)*x;
+ J=[J J(ki)+x'*Q*x+u(ki)'*R*u(ki)];
+ x=MatA*x+MatB*u(ki);
+ h1(ki+1)=x(1);
+ h2(ki+1)=x(2);
+ altura(ki)=x(2);
+end
+J(kmax)=J(kmax)+x'*S*x;
+u(kmax)=-K(kmax-1,:)*x;t=t*Ts;
+
+% Gráficos
+TamanioFuente = 12;
+
+subplot(2,1,1);hold on;
+plot(t,u,color_);title('Accion de control');
+subplot(2,1,2);hold on;
+plot(t,h2,color_);title('Altura');
+xlabel('Tiempo [Seg.]');
+figure;
+plot(t,J,'pb');grid on;title('Modelo lineal','FontSize',TamanioFuente);xlabel('Tiempo en Seg.','FontSize',TamanioFuente);ylabel('Acumulación de costo','FontSize',TamanioFuente);hold on;
+plot(t,Jmin*ones(size(J)),'.b');
