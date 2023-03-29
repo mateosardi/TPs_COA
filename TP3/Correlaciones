@@ -1,0 +1,52 @@
+close all, clear all,clc
+% Generar vector de ruido blanco
+N = 1024;
+ruido_blanco = randn(N,1);
+
+% Calcular la DFT del ruido blanco
+espectro_ruido_blanco = abs(fft(ruido_blanco));
+
+% Diseñar filtro pasa bajos
+fs = 1; % Frecuencia de muestreo
+fc = 0.2; % Frecuencia de corte
+orden = 10; % Orden del filtro
+[b,a] = butter(orden,fc/(fs/2)); % Coeficientes del filtro
+
+% Filtrar el ruido blanco con el filtro pasa bajos
+t = linspace(0,1,N); % Eje temporal
+X_t = filter(b,a,ruido_blanco);
+
+% Funciones y(t) y z(t)
+T = .5;
+Y_t = 0.5+0.5*square(2*pi*t/T,50);
+Z_t = 0*t + 1;
+
+% plot(t,Y_t)
+% title('Y(t)');
+% xlabel('tiempo(s)');
+% ylabel('Amplitud');
+
+% Obtención de w(t)
+for i=1:length(t)
+    W_t(i)=X_t(i)+Y_t(i)+Z_t(i);
+end
+
+
+% Cálculos de correlación 
+[c1, lags1] = xcorr(X_t, X_t); % Autocorrelación rxx
+[c2, lags2] = xcorr(Y_t, Y_t); % Autocorrelación ryy
+[c3, lags3] = xcorr(X_t, X_t); % Autocorrelación rzz
+[c4, lags4] = xcorr(W_t, W_t); % Autocorrelación rww
+
+% Gráficas de correlaciones
+plot(lags1, c1);
+title('Correlación rxx');xlabel('Lags'); ylabel('Correlación');
+figure;
+plot(lags2, c2);
+title('Correlación ryy'); xlabel('Lags'); ylabel('Correlación');
+figure;
+plot(lags3, c3);
+title('Correlación rzz'); xlabel('Lags'); ylabel('Correlación');
+figure;
+plot(lags4, c4);
+title('Correlación rww'); xlabel('Lags'); ylabel('Correlación');
