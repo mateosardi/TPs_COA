@@ -1,0 +1,17 @@
+% Calcular y graficar la función de autocorrelación de la siguiente señal temporal:
+% x(t)= A sen(wo t-sigma)
+close all; clear all; clc;
+
+% Valores del seno
+A = 2;
+fo = 5;
+wo = 2*pi*fo;
+sigma = 0;
+t = linspace(0,10/fo,1000);
+x_t = A*sin(wo*t-sigma);
+
+% Autocorrelación
+
+[c, lags] = xcorr(x_t, x_t); % Autocorrelación de la señal
+
+plot(lags, c)
