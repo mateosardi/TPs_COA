@@ -1,0 +1,95 @@
+close all; clear all; clc;
+
+%Generación de una señal PRBS
+m=7;
+x=ones(m,1);
+N=2000;%Puntos de la PRBS para muestrear
+el=5;
+for k=1:el:N
+ n_b=xor(x(7),x(6));
+ y(k:k+el-1)=x(7);
+ for h=m-1:-1:1
+ x(h+1)=x(h);
+ end
+ x(1)=n_b; %Ingreso el nuevo valor
+end
+x=[];
+x=(2*y(1:N)-1);
+%Cálculo de la correlación entre señales digitalizadas
+At=1;N=length(x);
+Tmax=N;
+t=At:At:Tmax;
+
+% Correlación rxx
+rx = xcorr(x,x);
+
+% Selección solo los valores positivos
+rx = rx(length(x):end);
+
+% Transformada de Fourier de la autocorrelación
+Rx = fft(rx);
+
+% Calcular la PSD
+Sxx = abs(Rx).^2;
+
+% Calcular la transformada de Laplace
+syms s t
+Xs = laplace(x, t, s);
+Gs = (1+0.16*s)/(1+0.64*s+0.4*s^2);
+Ys = Xs*Gs;
+
+% Obtención de y(t)
+
+yt = ilaplace(Ys, s, t);
+
+
+% Definir valores numéricos para las variables simbólicas
+num_values = [1, 2, 3];
+
+% Reemplazar los valores simbólicos en la expresión simbólica yt
+yt_num = subs(yt, t, num_values);
+
+% Convertir yt_num a un arreglo numérico
+yt_num = double(yt_num);
+
+% Eliminar valores NaN de yt_num
+yt_num(isnan(yt_num)) = [];
+
+% Ajustar la longitud de num_values y yt_num
+n = min(length(num_values), length(yt_num));
+num_values = num_values(1:n);
+yt_num = yt_num(1:n);
+
+% Graficar la respuesta en el tiempo
+% % % plot(num_values, yt_num);
+% % % xlabel('Tiempo');
+% % % ylabel('Amplitud');
+% % % title('Respuesta en el tiempo de PRBS multiplicada por G(s)');
+
+
+
+% Correlación ryx
+% ryx = xcorr(x,yt_num);
+% 
+% % Selección solo los valores positivos
+% ryx = ryx(length(yt_num):end);
+% 
+% % Transformada de Fourier de la autocorrelación
+% Ryx = fft(ryx);
+% 
+% % Calcular la PSD
+% Syx = abs(Ryx).^2;
+
+% Otra forma de obtener Syx
+Syx = cpsd(x, y);
+
+% Obtención del modelo F_w
+
+F_w = Syx ./ Sxx;
+
+
+% Gráficos
+w = linspace(0, 2*pi*fs, num_points);
+
+% figure;
+% plot(t,x,'.-k');title('Función temporal PRBS 7\Deltat=1.');xlabel('Tiempo [seg.]');
