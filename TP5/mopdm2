@@ -1,0 +1,26 @@
+%Función carrito
+function [x] = mopdm2(ts, estado, u)
+% x = [delta(i); delta_p(i); fi(i); fi_p(i)]
+m=.1;Fricc=0.1; long=0.6;g=9.8;M=.5;
+ts=ts/10;
+
+delta(1) = estado(1);
+delta_p(1) = estado(2);
+fi(1) = estado(3);
+fi_p(1) = estado(4);
+
+fi_pp=0;
+
+for i=1:10
+% Ecuaciones diferenciales
+delta_pp = 1/(M+m) *(-m*long*fi_pp*cos(fi(i))+m*long*(fi_p(i))^2*sin(fi(i))+Fricc*delta_p(i)+u);
+fi_pp = (1/long)* (g*sin(fi(i))-delta_pp*cos(fi(i)));
+
+delta_p(i+1) = delta_p(i)+ts*delta_pp;
+delta(i+1) = delta(i) + ts*delta_p(i);
+fi_p(i+1) = fi_p(i) + ts*fi_pp;
+fi(i+1) = fi(i) + ts*fi_p(i);
+end
+x=[delta(i); delta_p(i); fi(i); fi_p(i)];
+
+end
