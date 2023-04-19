@@ -15,9 +15,9 @@ for i=1:tiempo_etapa/h
 %     estado=[p(i); p_p(i); alfa(i); omega(i)];    
     p_pp=(1/(M+m))*(accion-m*long*tita_pp*cos(alfa)+m*long*omega^2*sin(alfa)-Fricc*p_p);
     tita_pp=(1/long)*(g*sin(alfa)-p_pp*cos(alfa));
-    p_p=p_p+h*p_pp;
     p=p+h*p_p;
+    p_p=p_p+h*p_pp;    
+    alfa=alfa+h*omega;
     omega=omega+h*tita_pp;
-    alfa=alfa+h*omega;    
 end
 X=[p; p_p; alfa; omega];
