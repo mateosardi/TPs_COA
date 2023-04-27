@@ -8,16 +8,16 @@
 clc;close all;clear all;
 
 % Parámetros
-orden_a=3; % Orden del denominador
-orden_b=3; % Orden del numerador + 1
-Med=3000;
+% orden_a=3; % Orden del denominador
+% orden_b=3; % Orden del numerador + 1
+% Med=6000;
 
 % Funciones de transferencia
 s = tf('s');
-% F = (2*s-1)/(s^2+3*s+6); ts=1/50; 
-% F = 16*(45*s+1)/((25*s+1)*(30*s+1)); ts=1/20;
-% F = 1/(0.16*s+1); ts=1/40;
-F = (45*s+1)/((0.16*s+1)*(0.4*s^2+0.64*s+1)); ts=1/20;
+F = (2*s-1)/(s^2+3*s+6); ts=1/50; orden_a=2; orden_b=2; Med=6000;
+% F = 16*(45*s+1)/((25*s+1)*(30*s+1)); ts=1/20; orden_a=2; orden_b=2; Med=6000;
+% F = 1/(0.16*s+1); ts=1/40; orden_a=1; orden_b=1; Med=6000;
+% F = (45*s+1)/((0.16*s+1)*(0.4*s^2+0.64*s+1)); ts=1/20; orden_a=3; orden_b=3; Med=6000;
 
 % Entrada escalón
 t=0:ts:20000*ts;
