@@ -1,23 +1,24 @@
 % clc; clear all; close all;
 TamanioFuente=14;
-CI=.3; color='.r';colorc='r';
+CI=10;
+color='.r';colorc='r';
 
-tiempo_etapa=.1;
-etapas=100;
-xx1=0:etapas-1;%Angulo crítico 6.1*.2 rad aprox.
+tiempo_etapa =t_etapa;
+etapas=350;
+xx1=0:etapas-1;
 sx=[0;0;CI];
 t=xx1;
 
 sal=zeros(3,1);   y1=zeros(1,etapas);y2=zeros(1,etapas);
-vmax=0.2;u_a=0; Mw=zeros(3,etapas-1); costo=[];costo(1)=0;consigna=[];consigna(1)=0;
+u_a=0; Mw=zeros(3,etapas-1); costo=[];costo(1)=0;consigna=[];consigna(1)=0;
 color='.-k';sigma_ia=.01;sigma_theta=.1;
 
 for k=1:etapas-1
     VX(:,k)=sx;
-    entrada = [sx(1); sx(2);sx(3)]+1.1*diag([sigma_ia 0 sigma_theta])*randn(3,1);
+    entrada = [sx(1); sx(2);sx(3)]+0*diag([sigma_ia 0 sigma_theta])*randn(3,1);
     %Medición ruidosa
-    y1(k)=entrada(3); %angulo del brazo
-    y2(k)=entrada(1); %posición del carro
+    y1(k)=entrada(3); % angulo del motor
+    y2(k)=entrada(1); % corriente
     X = [entrada; 1];     % bias
     s1 = W1a * X;
     y11=[pmntanh(s1); 1];
@@ -75,11 +76,12 @@ end
 
 
 NPD=costo(etapas);
-y1(k+1)=sal(3,1);
-y2(k+1)=sx(1,1); %angulo del brazo
+y1(k+1)=sal(3,1); % angulo motor
+% y2(k+1)=sx(1,1); 
+y2(k+1)=sal(1,1);% corriente
 figure(10);
 uo=consigna; To=5*6/109;
 subplot(4,1,1),plot(To*xx1,y1,color),title('Evolución con neurocontrolador'),ylabel('Ángulo'),grid on,hold on;
-subplot(4,1,2),plot(To*xx1,y2,color),ylabel('Posición'),grid on,hold on;
+subplot(4,1,2),plot(To*xx1,y2,color),ylabel('Corriente'),grid on,hold on;
 subplot(4,1,3),plot(To*xx1,costo,color),ylabel('Costo'),grid on,hold on; %,axis([0 etapas 0 6.1]);
 subplot(4,1,4),plot(To*xx1(1:length(uo)),uo,color),ylabel('Acción de control'),xlabel('Tiempo [seg.]'),grid on,hold on;
