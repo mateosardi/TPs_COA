@@ -10,7 +10,7 @@
 %s^2+2*s+3
 function [X]=mopdm2_motor(tiempo_etapa,xant,accion)
 Laa=366e-6; J=5e-9;Ra=55.6;B=0;Ki=6.49e-3;Km=6.53e-3;
-Tl = 0.002;
+Tl =0;
 h=1e-7;
 
 ia = xant(1);
