@@ -6,41 +6,39 @@ clear,clc,close all;
 
 % Condidiones iniciales
 % x = [ia(i); w(i); theta(i)]
-x_ini = [0;0;0.3];
+x_ini = [0;0;0.1];
 angulo(1) = x_ini(3);
-vfinal=0;
 
 % Algoritmo aprendizaje Q
-Max_it=10; % Máximas iteraciones
-TM=500; % Cantidad de estados
-Nmax=10; % Valores que tiene x
-Mmax=15; % Valores que tiene uf
-t_etapa = 0.1;
+Max_it=35; % Máximas iteraciones
+TM=100; % Cantidad de estados
+Mmax=25; % Valores que tiene uf
+t_etapa = 1e-4;
 color='.-k';
-tic;dx=Nmax; du=Mmax; etapas=10;umin=-100; umax=100;xmin=0; xmax=3;
+tic; du=Mmax;
+etapas=10;umin=-20; umax=20;
 %%%Carga de datos
 rand('state',0);
 randn('state',0);
 
 %VALORES OBTENIDOS CON EL PLANO DE FASE
-ia= .01*(randn(TM,1));
-w = 1*(randn(TM,1));
-theta = 5*(randn(TM,1));
+ia= .2*(randn(TM,1));
+w = 200*(randn(TM,1));
+theta = 1*(randn(TM,1));
 
 M_est = [ia, w, theta]; % Matriz de estados
 
-CI=x_ini(3); longx = 3; dd = 1; NP = dx*etapas;
+CI=x_ini(3); longx = 3; dd = 1;
 ho = 7;
 dW1 = zeros(ho,longx+1); dW2 = zeros(dd,ho+1);
 W1 = rand(ho,longx+1); W2 = rand(dd,ho+1); W1a=W1-.5;W2a=W2-.5;
-NetDef = ['HHHHH'
-    'L----'];
-maxiter = 10; stop_crit = 1e-4; lambda=1; D=0;
-trparms=[maxiter stop_crit lambda D]; vfinal=1;
+NetDef = ['HHHHHHH'
+    'L------'];
+maxiter = 10; stop_crit = 1e-2; lambda=1; D=0;
+trparms=[maxiter stop_crit lambda D];
 gama(1)=1;
 tic; divi=1; xx=0:etapas-1;
 
-Ax=(xmax-xmin)/(Nmax-1); %Delta x
 Au=(umax-umin)/(Mmax-1); %Delta u
 
 for i=1:Mmax
@@ -53,26 +51,30 @@ for iterac=1:Max_it
     J=zeros(1,TM);
     pos=0;
     for posi_x=1:TM
-        x_ini = M_est(posi_x,:);
-        entrada = x_ini;
-        X = [ entrada'; 1]; % bias
-        s1 = W1a * X;
-        y1=[pmntanh(s1); 1];
-        s2 = W2a * y1;
-        u = s2;
-        xy=mopdm2_motor(t_etapa,entrada,u);
-        X = [xy; 1];
-        s1 = W1 * X;
-        y1=[pmntanh(s1); 1];
-        s2 = W2 * y1;
-        y2=s2;
-        C(posi_x)=y2+indice_g_motor(entrada',u);
-        entrada = xy;
-        PHI(:,posi_x)=x_ini;
-        Yo(posi_x)=C(posi_x);
+        entrada = M_est(posi_x,:)';
+        PHI(:,posi_x)=entrada;
+        C_C=0;
+        for k_k=1:etapas
+            X = [ entrada; 1]; % bias
+            s1 = W1a * X;
+            y1=[pmntanh(s1); 1];
+            s2 = W2a * y1;
+            u = s2;
+            xy=mopdm2_motor(t_etapa,entrada,u);
+            %         X = [xy; 1];
+            %         s1 = W1 * X;
+            %         y1=[pmntanh(s1); 1];
+            %         s2 = W2 * y1;
+            %         y2=s2;
+            %         C(posi_x)=y2+indice_g_motor(entrada',u);
+            C_C=C_C+indice_g_motor(entrada,u);
+            entrada = xy;
+        end
+%         PHI(:,posi_x)=x_ini;
+        Yo(posi_x)=C_C;
     end
     [W1,W2,PI_vector,iteration,lambda]=marq(NetDef,W1,W2,PHI,Yo,trparms);
-    
+    C_Yo = Yo;
     for posi_x=1:TM
         x_ini = M_est(posi_x,:);
         entrada = x_ini;
