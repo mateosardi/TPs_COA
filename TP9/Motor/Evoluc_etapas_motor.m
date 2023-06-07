@@ -4,7 +4,7 @@ CI=10;
 color='.r';colorc='r';
 
 tiempo_etapa =t_etapa;
-etapas=350;
+etapas=200;
 xx1=0:etapas-1;
 sx=[0;0;CI];
 t=xx1;

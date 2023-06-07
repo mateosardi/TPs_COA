@@ -1,7 +1,6 @@
 % Programación dinámica.
 %Autor JAP
 clear,clc,close all;
-
 % MOTOR DE CC
 
 % Condidiones iniciales
@@ -22,9 +21,15 @@ rand('state',0);
 randn('state',0);
 
 %VALORES OBTENIDOS CON EL PLANO DE FASE
-ia= .2*(randn(TM,1));
-w = 200*(randn(TM,1));
-theta = 1*(randn(TM,1));
+% Valores máximos
+ia_m = .2;
+w_m = 200;
+theta_m = 1;
+M_max = diag([1/ia_m; 1/w_m; 1/theta_m]); % Matriz de valores máximos
+
+ia= ia_m*(randn(TM,1));
+w = w_m*(randn(TM,1));
+theta = theta_m*(randn(TM,1));
 
 M_est = [ia, w, theta]; % Matriz de estados
 
@@ -52,6 +57,7 @@ for iterac=1:Max_it
     pos=0;
     for posi_x=1:TM
         entrada = M_est(posi_x,:)';
+        entrada = reshape(diag( M_est(posi_x,:)' .* M_max),[],1);
         PHI(:,posi_x)=entrada;
         C_C=0;
         for k_k=1:etapas
@@ -81,6 +87,8 @@ for iterac=1:Max_it
         for acc=1:du
             xy=mopdm2_motor(t_etapa,x_ini,uf(acc));
             entrada = xy;
+            
+                 
             X = [ entrada; 1]; % bias
             s1 = W1 * X;
             y1=[pmntanh(s1); 1];
