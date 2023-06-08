@@ -1,5 +1,9 @@
+% Datos obtenidos de:
+% International Journal of Dynamics and Control · June 2018
+% DOI: 10.1007/s40435-017-0330-x
+
 function [X]=modmotor_PID(t_etapa, xant, accion, Tl)
-LAA = 366e-6; J = 5e-9;Ra = 55.6; B = 0; LAF = 5e-6; RF = 64; LFF = 140e-6;
+LAA = 0.01; J = 0.00208;Ra = 1; B = 0.0011; LAF = 0.1238; RF = 60; LFF = 60;
 h=1e-7;
 
 ia = xant(1);
@@ -8,7 +12,7 @@ omega = xant(3);
 theta= xant(4);
 
 Va = accion;
-Vf = 12;
+Vf = 24;
 
 for ii=1:t_etapa/h    
     if_p = - RF/LFF * i_f + Vf/LFF;
