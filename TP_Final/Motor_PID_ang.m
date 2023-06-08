@@ -12,11 +12,11 @@ Ts=t_etapa;
 
 titaRef=1; % Referencia deseada
 tF=2; % Tiempo de simulación
-Tl=0; % Torque aplicado
-Vf = 12; % Tensión de campo
+Tl=0.01; % Torque aplicado
+Vf = 220; % Tensión de campo
 
 % Constantes del PID
-Kp=80; Ki=300; Kd=10;
+Kp=0.8; Ki=0; Kd=0;
 
 % Variables del PID
 A1=((2*Kp*Ts)+(Ki*(Ts^2))+(2*Kd))/(2*Ts);
@@ -28,20 +28,17 @@ u=0;
 
 ii=0;
 for t=0:t_etapa:tF
-    if t==0.5
-        Tl=0
-    end
     ii=ii+1;k=ii+2;
-    X = modmotor_PID(t_etapa, X, u, Tl); % Función del modelo del motor
+    X = modmotor_PID(t_etapa, X, u,Vf, Tl); % Función del modelo del motor
     e(k)=titaRef-X(4); %ERROR
     u = u + A1*e(k) + B1*e(k-1) + C1*e(k-2); % Acción de control utilizando PID
     
-    % Saturación a 12V
-    if u>12
-        u = 12;
+    % Saturación a 220 V
+    if u>220
+        u = 220;
     end
-    if u<-12
-        u = -12;
+    if u<-220
+        u = -220;
     end
     
     i_a(ii)=X(1);% ia
