@@ -18,11 +18,13 @@ w = xant(2);
 theta= xant(3);
 
 Va = accion;
-ip=0;
+
 for i=1:tiempo_etapa/h
-    ip = -Ra/Laa*ia - Km/Laa*theta+Va/Laa;
-    w = Ki/J * ia - B/J*theta - Tl/J;
+    ip = -Ra/Laa*ia - Km/Laa*w+Va/Laa;
+    wp = Ki/J * ia - B/J*w - Tl/J;
+    
     ia = ia + h*ip;
+    w = w + h*wp;
     theta = theta + h*w;   
 end
 X=[ia;w;theta];
