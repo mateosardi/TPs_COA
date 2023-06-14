@@ -1,7 +1,8 @@
 clc;clear all;close all
 
 % Definición de constantes
-Laa=366e-6; J=5e-9; Ra=55.6; Bm=0; Ki=6.49e-3; Km=6.53e-3;
+LAA = 0.01; J = 0.00208;Ra = 1; B = 0.0011; LAF = 0.1238; RFF = 60; LFF = 60;
+
 torque=1.15e-3;
 torque=0;
 t_etapa = 1e-4; tF = 0.6;
@@ -14,6 +15,18 @@ A=[-Ra/Laa -Km/Laa 0; Ki/J -Bm/J 0; 0 1 0];
 B=[1/Laa; 0; 0];
 C=[0 0 1];
 D=0;
+
+A =  [-Ra/LAA -LAF/LAA 0 0
+      -RFF/LFF 0 0 0 
+      LAF/J 0 -B/J 0 
+      0 0 1 0 ];
+
+B =  [0 0 
+      1/LFF 0 
+      0 0 
+      0 0 ];
+
+
 
 % Condidiones iniciales
 % x = [ia(i); w(i); theta(i)]
