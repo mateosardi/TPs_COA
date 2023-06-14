@@ -1,7 +1,7 @@
 % Implementación de un controlador PID en tiempo discreto para que el ángulo del motor permanezca en
 % una referencia deseada.
 
-clear;close all; clc;
+% clear;close all; clc;
 
 % Variables de estado
 % X = [ia, i_f, omega, theta]
@@ -12,7 +12,6 @@ Ts=t_etapa;
 
 titaRef=1; % Referencia deseada
 tF=2; % Tiempo de simulación
-Tl=0.01; % Torque aplicado
 Vf = 220; % Tensión de campo
 
 % Constantes del PID
@@ -48,12 +47,19 @@ for t=0:t_etapa:tF
     acc(k)=u;
 end
 
-color_='r';
+leyenda = sprintf('Torque (Tl = %.2f)', Tl);
+% color_='r';
 t=0:t_etapa:tF+2*t_etapa;
 subplot(3,1,1);hold on;
-plot(t,e,color_);title('Error');
+plot(t,e);title('Error');
+% legend(leyenda);
+
 subplot(3,1,2);hold on;
-plot(t,acc,color_);title('Acción de control');
+plot(t,acc);title('Acción de control');
+% legend(leyenda);
+
 subplot(3,1,3);hold on;
-plot(t,theta,color_);title('Ángulo \theta');
+plot(t,theta);title('Ángulo \theta');
+% legend(leyenda);
 xlabel('Tiempo [Seg.]');
+hold on;
