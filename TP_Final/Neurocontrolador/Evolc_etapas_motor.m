@@ -6,16 +6,16 @@ color='.r';colorc='r';
 tiempo_etapa =t_etapa;
 etapas=10000;
 xx1=0:etapas-1;
-sx=[0;0;CI];
+sx=[0;0;0;CI];
 t=xx1;
 
-sal=zeros(3,1);   y1=zeros(1,etapas);y2=zeros(1,etapas);
-u_a=0; Mw=zeros(3,etapas-1); costo=[];costo(1)=0;consigna=[];consigna(1)=0;
+sal=zeros(4,1);   y1=zeros(1,etapas);y2=zeros(1,etapas);
+u_a=0; Mw=zeros(4,etapas-1); costo=[];costo(1)=0;consigna=[];consigna(1)=0;
 color='.-k';sigma_ia=.01;sigma_theta=.1;
 
 for k=1:etapas-1
     VX(:,k)=sx;
-    entrada = [sx(1); sx(2);sx(3)]+0*diag([sigma_ia 0 sigma_theta])*randn(3,1);
+    entrada = [sx(1); sx(2);sx(3);sx(4)]+0*diag([sigma_ia 0 0 sigma_theta])*randn(4,1);
     %Medición ruidosa
     y1(k)=entrada(3); % angulo del motor
     y2(k)=entrada(1); % corriente
@@ -24,7 +24,7 @@ for k=1:etapas-1
     y11=[pmntanh(s1); 1];
     s2 = W2a * y11;
     consigna(k)=s2;
-    sal=mopdm2_motor(tiempo_etapa,sx,consigna(k));
+    sal=mopdm2_motor(tiempo_etapa,sx,torque,consigna(k),Vf);
     sx=sal(:,1);
     costo_p(k)=indice_g_motor(sal,consigna(k));
     costo(k+1)=costo(k)+indice_g_motor(sx,consigna(k));

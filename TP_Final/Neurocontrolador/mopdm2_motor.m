@@ -8,7 +8,7 @@
 %   3
 %-------               Ts=6/109
 %s^2+2*s+3
-function [X]=mopdm2_motor(tiempo_etapa,xant,accion)
+function [X]=mopdm2_motor(t_etapa,xant,Tl,accion,Vf)
 LAA = 0.01; J = 0.00208;Ra = 1; B = 0.0011; LAF = 0.1238; RF = 60; LFF = 60;
 h=1e-7;
 
@@ -29,5 +29,5 @@ for ii=1:t_etapa/h
     omega = omega + h * wp;
     theta = theta + h * omega;
 end
-X=[ia, i_f, omega, theta];
+X=[ia; i_f; omega; theta];
 end

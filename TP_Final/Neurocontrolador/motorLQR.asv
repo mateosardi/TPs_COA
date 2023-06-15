@@ -2,7 +2,7 @@ clc;clear all;close all
 
 % Definición de constantes
 LAA = 0.01; J = 0.00208;Ra = 1; B = 0.0011; LAF = 0.1238; RFF = 60; LFF = 60;
-Vf = 220; % Tensión de campo
+Vf = 12; % Tensión de campo
 
 torque=1.15e-3;
 torque=0;
@@ -27,7 +27,7 @@ theta(1)=x(4);
 u(1) = 0;
 
 % LQR
-Q=diag([1 1 1 1]);    R=1;
+Q=diag([1 1 1 1]);    R=100;
 
 % Ganancia de realimentación
 [K,Pr,e] = lqr(A, B, Q, R);
