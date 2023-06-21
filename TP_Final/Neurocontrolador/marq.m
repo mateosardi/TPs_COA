@@ -122,7 +122,7 @@ PI_vector = zeros(max_iter,1);          % A vector containing the accumulated SS
 %----------------------------------------------------------------------------------
 clc;
 c=fix(clock);
-fprintf('Network training started at %2i.%2i.%2i\n\n',c(4),c(5),c(6));
+% fprintf('Network training started at %2i.%2i.%2i\n\n',c(4),c(5),c(6));
 
 
 % >>>>>>>>>>>>>>>>>>>>>  COMPUTE NETWORK OUTPUT  y2(theta)   <<<<<<<<<<<<<<<<<<<<<<
@@ -255,7 +255,7 @@ if dw==1,
     dw = 1;
     iteration = iteration + 1;
     PI_vector(iteration-1) = PI;                             % Collect PI in vector
-    fprintf('iteration # %i   PI = %4.3e\r',iteration-1,PI); % Print on-line inform
+%     fprintf('iteration # %i   PI = %4.3e\r',iteration-1,PI); % Print on-line inform
   end
 
   % Check if stop condition is fulfilled
@@ -266,4 +266,4 @@ end
 %----------------------------------------------------------------------------------
 PI_vector = PI_vector(1:iteration-1);
 c=fix(clock);
-fprintf('\n\nNetwork training ended at %2i.%2i.%2i\n',c(4),c(5),c(6));
+% fprintf('\n\nNetwork training ended at %2i.%2i.%2i\n',c(4),c(5),c(6));

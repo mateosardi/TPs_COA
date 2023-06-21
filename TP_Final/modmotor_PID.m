@@ -4,7 +4,7 @@
 
 function [X]=modmotor_PID(t_etapa, xant, accion,Vf, Tl)
 LAA = 0.01; J = 0.00208;Ra = 1; B = 0.0011; LAF = 0.1238; RF = 60; LFF = 60;
-h=1e-7;
+h=1e-3;
 
 ia = xant(1);
 i_f = xant(2);

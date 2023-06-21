@@ -15,44 +15,41 @@ torque = 0; % Torque aplicado
 Vf = 220; % Tensión de campo
 
 % Algoritmo aprendizaje Q
-Max_it=9; % Máximas iteraciones
-TM=300; % Cantidad de estados
-Mmax=5; % Valores que tiene uf
-t_etapa = 1e-4;
+Max_it=15; % Máximas iteraciones
+TM=700; % Cantidad de estados
+Mmax=50; % Valores que tiene uf
+t_etapa = 1e-2;
 color='.-k';
 tic; du=Mmax;
-etapas=50;umin=-10; umax=10;
-%%%Carga de datos
-rand('state',0);
-randn('state',0);
-
+etapas=70;
+umin=-12; umax=12;
 %%%Carga de datos
 rand('state',0);
 randn('state',0);
 
 %VALORES OBTENIDOS CON EL CONTROLADOR PID
 % Valores máximos
-ia_m = 2.3865;
-if_m = 3.4843;
-w_m = 7.0968;
-theta_m = 1.4519;
-V_max = [1/ia_m; 1/if_m; 1/w_m; 1/theta_m]; % Vector de valores máximos
-% V_max = [1;1; 1; 1];
+ia_m = 3;
+if_m = 2.5;
+w_m = 12;
+theta_m = 2;
+% V_max = [1/ia_m; 1/if_m; 1/w_m; 1/theta_m]; % Vector de valores máximos
+V_max = [1;1; 1; 1];
 
-ia= ia_m*(randn(TM,1));
-i_f= if_m*(randn(TM,1));
-w = w_m*(randn(TM,1));
-theta = theta_m*(randn(TM,1));
+ia= 2*ia_m*((rand(TM,1)-.5));
+i_f= if_m*(ones(TM,1));
+w = 2*w_m*((rand(TM,1)-.5));
+theta = 2*theta_m*((rand(TM,1)-.5));
 
 M_est = [ia,i_f, w, theta]; % Matriz de estados
 
 CI=x_ini(4); longx = 4; dd = 1;
-ho = 7;
+ho = 3;
 dW1 = zeros(ho,longx+1); dW2 = zeros(dd,ho+1);
 W1 = rand(ho,longx+1); W2 = rand(dd,ho+1); W1a=W1-.5;W2a=W2-.5;
-NetDef = ['HHHHHHH'
-    'L------'];
-maxiter = 10; stop_crit = 1e-2; lambda=1; D=0;
+NetDef = ['HHH'
+    'L--'];
+maxiter = 10; stop_crit = 1e-8; lambda=1; D=0;
 trparms=[maxiter stop_crit lambda D];
 gama(1)=1;
 tic; divi=1; xx=0:etapas-1;
@@ -109,7 +106,7 @@ for iterac=1:Max_it
             %             Q(acc)=indice_g_motor(x_ini',uf(acc))+xy'*Pr*xy;
         end
         [val lugar]=min(Q(:));
-        J(posi_x)=val;
+%         J(posi_x)=val;
         Ya(posi_x)=uf(lugar);
         PHI(:,posi_x)=x_ini'.* V_max;
     end
