@@ -28,3 +28,8 @@ ia_m = M_max(1,:);
 if_m = M_max(2,:);
 omega_m = M_max(3,:);
 theta_m = M_max(4,:);
+
+ia_ex = ia_m(2)-ia_m(1)
+if_ex = if_m(2)-if_m(1)
+omega_ex = omega_m(2)-omega_m(1)
+theta_ex = theta_m(2)-theta_m(1)

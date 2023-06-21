@@ -15,9 +15,9 @@ torque = 0; % Torque aplicado
 Vf = 220; % Tensión de campo
 
 % Algoritmo aprendizaje Q
-Max_it=6; % Máximas iteraciones
-TM=100; % Cantidad de estados
-Mmax=3; % Valores que tiene uf
+Max_it=9; % Máximas iteraciones
+TM=300; % Cantidad de estados
+Mmax=5; % Valores que tiene uf
 t_etapa = 1e-4;
 color='.-k';
 tic; du=Mmax;
@@ -30,12 +30,12 @@ randn('state',0);
 rand('state',0);
 randn('state',0);
 
-%VALORES OBTENIDOS CON EL PLANO DE FASE
+%VALORES OBTENIDOS CON EL CONTROLADOR PID
 % Valores máximos
-ia_m = 20e-3;
-if_m = 20e-4;
-w_m = 40;
-theta_m = 2;
+ia_m = 2.3865;
+if_m = 3.4843;
+w_m = 7.0968;
+theta_m = 1.4519;
 V_max = [1/ia_m; 1/if_m; 1/w_m; 1/theta_m]; % Vector de valores máximos
 % V_max = [1;1; 1; 1];
 
@@ -130,8 +130,8 @@ for iterac=1:Max_it
 end
 Evolc_etapas_motor;
 VX;
-figure;
-semilogy(evoluc,'.k');
-xlabel('Iteraciones');
-title('Costo para ir desde x(0)=2 a x(5)=1');
-costo=zeros(4,etapas);estado=costo;u_opt=costo;
+% figure;
+% semilogy(evoluc,'.k');
+% xlabel('Iteraciones');
+% title('Costo para ir desde x(0)=2 a x(5)=1');
+% costo=zeros(4,etapas);estado=costo;u_opt=costo;

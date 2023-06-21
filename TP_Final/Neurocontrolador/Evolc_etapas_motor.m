@@ -4,10 +4,12 @@ CI=2;
 color='.r';colorc='r';
 
 tiempo_etapa =t_etapa;
-etapas=10000;
+etapas=100000;
 xx1=0:etapas-1;
 sx=[0;0;0;CI];
 t=xx1;
+
+referencia = ones(1, etapas) * 1; % Referencia de ángulo deseada (1 radian)
 
 sal=zeros(4,1);   y1=zeros(1,etapas);y2=zeros(1,etapas);
 u_a=0; Mw=zeros(4,etapas-1); costo=[];costo(1)=0;consigna=[];consigna(1)=0;
@@ -15,9 +17,9 @@ color='.-k';sigma_ia=.01;sigma_theta=.1;
 
 for k=1:etapas-1
     VX(:,k)=sx;
-    entrada = [sx(1); sx(2);sx(3);sx(4)]+0*diag([sigma_ia 0 0 sigma_theta])*randn(4,1);
+    entrada = [sx(1); sx(2);sx(3);sx(4)]+0.5*diag([sigma_ia 0 0 sigma_theta])*randn(4,1);
     %Medición ruidosa
-    y1(k)=entrada(3); % angulo del motor
+    y1(k)=entrada(4); % angulo del motor
     y2(k)=entrada(1); % corriente
     X = [entrada.*V_max; 1]; % bias
     s1 = W1a * X;
@@ -76,10 +78,10 @@ end
 
 
 NPD=costo(etapas);
-y1(k+1)=sal(3,1); % angulo motor
+y1(k+1)=sal(4,1); % angulo motor
 % y2(k+1)=sx(1,1); 
 y2(k+1)=sal(1,1);% corriente
-figure(10);
+figure;
 uo=consigna; To=t_etapa;
 subplot(4,1,1),plot(To*xx1,y1,color),title('Evolución con neurocontrolador'),ylabel('Ángulo'),grid on,hold on;
 subplot(4,1,2),plot(To*xx1,y2,color),ylabel('Corriente'),grid on,hold on;

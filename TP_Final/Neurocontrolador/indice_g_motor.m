@@ -4,4 +4,4 @@
 % accion: Accion de control aplicada
 % [y x1 x2]
 function [y]=indice_g_motor(x,accion)
-   y = x' *diag([100 10 1/900 1/4])* x+1*accion^2;
+   y = x' *diag([1/10 1 1/10 1/10])* x+.1*accion^2;
