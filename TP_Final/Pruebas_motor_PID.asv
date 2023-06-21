@@ -14,7 +14,7 @@ if_m = [0, 0];
 omega_m = [0, 0];
 theta_m = [0, 0];
 
-M_max = [ia_m;if_m;omega_m;theta_m]; % Matriz que almacena valores máximos
+M_max = [ia_m;if_m;omega_m;theta_m]; % Matriz que alma
 
 for i = 0:5
     Motor_PID_ang;

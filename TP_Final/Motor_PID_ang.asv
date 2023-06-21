@@ -1,7 +1,7 @@
 % Implementación de un controlador PID en tiempo discreto para que el ángulo del motor permanezca en
 % una referencia deseada.
 
-% clear;close all; clc;
+clear;close all; clc;
 
 % Variables de estado
 % X = [ia, i_f, omega, theta]
@@ -11,10 +11,12 @@ t_etapa=1e-3;
 Ts=t_etapa;
 
 titaRef=1; % Referencia deseada
-tF=3; % Tiempo de simulación
+tF=2; % Tiempo de simulación
 Vf = 220; % Tensión de campo
-% Tl = 0.01; % Torque de carga
+Tl = 0.01; % Torque de carga
 
+% Constantes del PID
+Kp=0.8; Ki=0; Kd=0;
 
 % Variables del PID
 A1=((2*Kp*Ts)+(Ki*(Ts^2))+(2*Kd))/(2*Ts);
@@ -54,7 +56,7 @@ i_f(ii+2)=i_f(ii);
 theta(ii+1) = theta(ii);
 theta(ii+2) = theta(ii);
 omega(ii+1)=omega(ii);
-omega(ii+2)=omega(ii);
+omega(ii+1)=omega(ii)
 acc(ii+1)=acc(ii);
 acc(ii+2)=acc(ii);
 
@@ -65,17 +67,17 @@ t=0:t_etapa:tF+2*t_etapa;
 % plot(t,e);title('Error');
 % % legend(leyenda);
 
-% figure
+figure
 subplot(2,2,1);
-plot(t,acc);title('Accion de control'); hold on;
+plot(t,acc,'r');title('Accion de control');
 xlabel('tiempo[s]');ylabel('Amplitud');
 subplot(2,2,2);
-plot(t,i_a);title('Corriente de armadura'); hold on;
+plot(t,i_a,'r');title('Corriente de armadura');
 xlabel('tiempo[s]');ylabel('Corriente[A]');
 subplot(2,2,3);
-plot(t,theta);title('Angulo \theta'); hold on;
-xlabel('tiempo[s]');ylabel('Angulo[rad]'); 
+plot(t,theta,'r');title('Angulo \theta');
+xlabel('tiempo[s]');ylabel('Angulo[rad]'); legend(leyenda);
 subplot(2,2,4);
-plot(t,omega);title('Velocidad \omega'); hold on;
+plot(t,omega,'r');title('Velocidad \omega');
 xlabel('tiempo[s]');ylabel('Velocidad[rad/s]');
 
