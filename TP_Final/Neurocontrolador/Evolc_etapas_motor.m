@@ -1,7 +1,7 @@
 % clc; clear all; 
 close all;
 TamanioFuente=14;
-CI=2;
+CI=10;
 titaRef=0;
 color='.r';colorc='r';
 tiempo_etapa =t_etapa;
@@ -33,7 +33,7 @@ u=0;
 e=zeros(etapas+3,1);
 for k=1:etapas-1
     VX(:,k)=sx;
-    entrada = [sx(1); sx(2);sx(3);sx(4)]+0.9*diag([sigma_ia 0 0 sigma_theta])*randn(4,1);
+    entrada = [sx(1); sx(2);sx(3);sx(4)]+0.5*diag([sigma_ia 0 0 sigma_theta])*randn(4,1);
     %Medicion ruidosa
     y1(k)=entrada(1); % corriente armadura
     y2(k)=entrada(2); % corriente de campo
@@ -76,11 +76,11 @@ plot(To*xx1(1:length(uo)),uo,color),ylabel('Accion de control'),xlabel('Tiempo [
 
 figure;
 subplot(2,2,1);
-plot(To*xx1,y1);title('Corriente de armadura'); hold on;
-xlabel('tiempo[s]');ylabel('Corriente[A]');
-subplot(2,2,2);
 plot(To*xx1(1:length(uo)),uo);
-ylabel('Accion de control'),xlabel('Tiempo [seg.]'),grid on,title('Accion de control');
+ylabel('Accion de control'),xlabel('Tiempo [seg.]'),title('Accion de control');
+subplot(2,2,2);
+plot(To*xx1,y1);title('Corriente de armadura ia'); hold on;
+xlabel('tiempo[s]');ylabel('Corriente[A]');
 % plot(To*xx1,y2);title('Corriente de campo'); hold on;
 % xlabel('tiempo[s]');ylabel('Corriente[A]');
 subplot(2,2,3);
@@ -89,4 +89,8 @@ xlabel('tiempo[s]');ylabel('Velocidad[rad/s]');
 subplot(2,2,4);
 plot(To*xx1,y4);title('Angulo \theta'); hold on;
 xlabel('tiempo[s]');ylabel('Angulo[rad]');
+
+fprintf('Media: %.4f\n',mean(y4))
+fprintf('Varianza: %.4f\n',var(y4))
+
 

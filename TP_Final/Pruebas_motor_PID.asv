@@ -1,13 +1,11 @@
 clear; close all; clc;
 
 % X = [ia, i_f, omega, theta]
-CI = 2; % Condicion inicial de angulo
-titaRef=0; % Referencia deseada
-Tl = 0.1; % Torque aplicado inicial
+Tl = 0.1; % Torque aplicado inicial'
 torque_values = zeros(1, 6); % Vector para almacenar los valores de torque
 
 % Constantes del PID
-Kp=4; Ki=.9; Kd=0.1;
+Kp=5; Ki=10; Kd=0.001;
 
 % Valores máximos y mínimos
 % [min, max]
@@ -18,7 +16,7 @@ theta_m = [0, 0];
 
 M_max = [ia_m;if_m;omega_m;theta_m]; % Matriz que almacena valores máximos
 
-for i = 0:0
+for i = 0:5
     Motor_PID_ang;
     M_max = val_ext(M_max,i_a,i_f,omega,theta);
     

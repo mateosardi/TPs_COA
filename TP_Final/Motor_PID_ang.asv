@@ -10,7 +10,7 @@ X=[0; 0; 0; CI]; %valores iniciales
 t_etapa=1e-2;
 Ts=t_etapa;
 
-tF = 2; % Tiempo de simulación
+tF=3; % Tiempo de simulación
 Vf = 220; % Tensión de campo
 % Tl = 0.01; % Torque de carga
 
@@ -27,9 +27,10 @@ sigma_ia=.01;sigma_theta=.1;
 ii=0;
 for t=0:t_etapa:tF
     ii=ii+1;k=ii+2;
-    X = modmotor_PID(t_etapa, X, u,Vf, Tl)+(0.5*diag([sigma_ia 0 0 sigma_theta])*randn(4,1))'; % Función del modelo del motor con ruido
+    X = modmotor_PID(t_etapa, X, u,Vf, Tl)+(0.0*diag([sigma_ia 0 0 sigma_theta])*randn(4,1))'; % Función del modelo del motor con ruido
     e(k)=titaRef-X(4); %ERROR
     u = u + A1*e(k) + B1*e(k-1) + C1*e(k-2); % Acción de control utilizando PID
+   
     
     % Saturación a 220 V
     if u>220
@@ -82,8 +83,4 @@ plot(t,theta);title('Angulo \theta'); hold on;
 % plot(t,(mean(theta)+var(theta))*ones(size(t)),'r'); hold on;
 % plot(t,(mean(theta)-var(theta))*ones(size(t)),'r'); hold on;
 xlabel('tiempo[s]');ylabel('Angulo[rad]'); 
-
-
-fprintf('Media: %.4f\n',mean(theta))
-fprintf('Varianza: %.4f\n',var(theta))
 
