@@ -72,6 +72,7 @@ for iterac=1:Max_it
             s2 = W2a * y1;
             u = s2;
             xy=mopdm2_motor(t_etapa,entrada,torque,u,Vf);
+            xy = xy(1:4);
             C_C=C_C+indice_g_motor(entrada,u);
             entrada = xy;
         end
@@ -85,6 +86,7 @@ for iterac=1:Max_it
         entrada = x_ini;
         for acc=1:du
             xy=mopdm2_motor(t_etapa,x_ini,torque,uf(acc),Vf);
+            xy = xy(1:4);
             entrada = xy;
             X = [ entrada.* V_max; 1]; % bias
             s1 = W1 * X;
@@ -107,6 +109,7 @@ for iterac=1:Max_it
         y1=[pmntanh(s1); 1];
         s2 = W2a * y1;
         xy=mopdm2_motor(t_etapa,entrada,torque,s2,Vf);
+        xy = xy(1:4);
         costo=costo+indice_g_motor(entrada,s2);
         entrada = xy;
     end
